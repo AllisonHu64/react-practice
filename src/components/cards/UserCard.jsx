@@ -21,8 +21,8 @@ function UserCard(props) {
             </Typography>
         </CardContent>
         <CardActions>
-            <Button size="small" startIcon={<EditIcon />}>Edit</Button>
-            <Button size="small" startIcon={<DeleteIcon />} color="error">Delete</Button>
+            <Button size="small" startIcon={<EditIcon />} onClick={props.onEditClick}>Edit</Button>
+            <Button size="small" startIcon={<DeleteIcon />} color="error" onClick={props.onDeleteClick}>Delete</Button>
         </CardActions>
     </Card>
     )
