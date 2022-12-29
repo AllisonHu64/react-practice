@@ -66,7 +66,7 @@ function UserEditModal(props) {
 
     const onSubmit = () => {
         if (validateAge() & validateName() &&  typeof props.onEdit == 'function') {
-            props.onEdit({name, age: parseInt(age)});
+            props.onEdit({id: props.user?.id, name, age: parseInt(age)});
             props.handleClose();
         }
     }
