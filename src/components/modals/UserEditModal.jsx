@@ -1,10 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { UserActionModalType } from '../../Enum/enum';
-import { UserActionModalTitleText } from '../../Const/const';
 import Button from '@mui/material/Button';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -21,33 +18,18 @@ const style = {
     p: 4,
 };
 
-function UserActionModal(props) {
-    const [modalTitle, setModalTitle] = useState("uninit");
+function UserEditModal(props) {
     const [name, setName] = useState('');
     const [nameErrorText, setNameErrorText] = useState('');
     const [age, setAge] = useState();
     const [ageErrorText, setAgeErrorText] = useState('');
 
     useEffect(()=>{
-        switch (props.action) {
-            case UserActionModalType.Add:
-                setModalTitle(UserActionModalTitleText.Add)
-                setAge('');
-                setAgeErrorText('');
-                setName('');
-                setNameErrorText('');
-                break;
-            case UserActionModalType.Edit:
-                setModalTitle(UserActionModalTitleText.Edit)
-                setAge(props.user?.age);
-                setAgeErrorText('');
-                setName(props.user?.name);
-                setNameErrorText('');
-                break;
-            default:
-                // TODO add error handling
-        }
-    }, [props.action, props.open])
+        setAge(props.user?.age?.toString());
+        setAgeErrorText('');
+        setName(props.user?.name);
+        setNameErrorText('');
+    }, [props.open])
 
     const validateName = () => {
         let errorText = '';
@@ -55,7 +37,6 @@ function UserActionModal(props) {
             errorText = 'Name field is required.';
         }
 
-        console.log(name.length);
         if (!errorText && (name.length < 4 || name.length > 16)) {
             errorText = 'Name must be between 4 to 16 characters.';
         }
@@ -74,12 +55,9 @@ function UserActionModal(props) {
             errorText = 'Age field is required.';
         }
 
-        if (!errorText && !new RegExp('^[0-9]*$').test(age)) {
-            errorText = 'Age must be a number.';
-        }
-
-        if (!errorText && (age.length != 1 && age.length != 2)) {
-            errorText = 'Age must be between 1 to 2 numbers.';
+        const ageInt = parseInt(age);
+        if (!errorText && (ageInt < 0 || ageInt > 100)) {
+            errorText = 'Age must be between 0 and 100.';
         }
         
         setAgeErrorText(errorText)
@@ -87,8 +65,8 @@ function UserActionModal(props) {
     }
 
     const onSubmit = () => {
-        if (validateAge() & validateName() &&  typeof props.onSubmit == 'function') {
-            props.onSubmit({name, age});
+        if (validateAge() & validateName() &&  typeof props.onEdit == 'function') {
+            props.onEdit({name, age: parseInt(age)});
             props.handleClose();
         }
     }
@@ -97,7 +75,7 @@ function UserActionModal(props) {
         <Modal open={props.open} onClose={props.handleClose}>
             <Box sx={style}>
                 <Typography align="center" variant="h6" component="h2" style={{fontWeight: "bold"}}>
-                    {modalTitle}
+                    {"Edit User"}
                 </Typography>
                 <TextField fullWidth
                     margin="normal"
@@ -109,6 +87,7 @@ function UserActionModal(props) {
                     helperText={nameErrorText}/>
                 <TextField fullWidth
                     margin="normal"
+                    type="number"
                     error={ageErrorText != ''}
                     id="outlined-error-helper-text"
                     onChange={(event)=>setAge(event.target.value)}
@@ -131,5 +110,4 @@ function UserActionModal(props) {
     )
 }
 
-
-export default UserActionModal;
+export default UserEditModal;
