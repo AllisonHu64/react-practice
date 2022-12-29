@@ -18,7 +18,7 @@ const style = {
 
 function UserDeleteModal(props) {
     const onSubmit = () => {
-        props.onDelete()
+        props.onDelete(props.user?.id)
         props.handleClose();
     }
 

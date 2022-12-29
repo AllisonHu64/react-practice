@@ -1,11 +1,12 @@
 import UserCard from "../components/cards/UserCard";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Grid from "@mui/material/Grid";
 import UserAddModal from "../components/modals/UserAddModal";
 import UserEditModal from "../components/modals/UserEditModal";
 import UserDeleteModal from "../components/modals/UserDeleteModal";
+import UserApi from '../apis/UserApi'
 
 
 function UserPage() {
@@ -18,36 +19,33 @@ function UserPage() {
     const handleCloseEditModal = () => setOpenEditModal(false);
     const handleOpenDeleteModal = () => setOpenDeleteModal(true);
     const handleCloseDeleteModal = () => setOpenDeleteModal(false);
-    const [users, setUsers] = useState([{id: 1, name: 'ztgg', age: 1}, {id: 2, name: 'demo', age: 2}])
+    const [users, setUsers] = useState([])
     const [chosenUser, setChosenUser] = useState({});
+    const userApi = new UserApi();
 
-    const newUserId = () => {
-        if (users.length == 0) {
-            return 1;
-        }
-        return users[users.length - 1] + 1;
+    const updateUsers = ()=>{
+        userApi.getUsers()
+            .then((res)=>setUsers(res.data))
+            .catch(()=>alert("Failed to retrieve users info."))
     }
+    useEffect(()=>{updateUsers()},[])
 
     const addUser = (payloads) => {
-        const usersCopy = users.slice();
-        usersCopy.push({id:newUserId(), ...payloads});
-        setUsers(usersCopy);
+        userApi.addUser(payloads)
+            .then(()=>{updateUsers();alert("Successfully added user.")})
+            .catch((err)=>alert(err))
     }
 
     const editUser = (payloads) => {
-        const usersCopy = users.slice();
-        for (let i = 0; i < usersCopy.length; i++) {
-            if (chosenUser && usersCopy[i].id == chosenUser.id) {
-                usersCopy[i] = {...usersCopy[i], ...payloads};
-                break;
-            }
-        }
-        setUsers(usersCopy);
+        userApi.editUser(payloads)
+            .then(()=>{updateUsers();alert("Successfully edited user.")})
+            .catch((err)=>alert(err))
     }
 
-    const deleteUser = () => {
-        const id = chosenUser.id
-        setUsers(users.filter((user)=> user.id != id))
+    const deleteUser = (payloads) => {
+        userApi.deleteUser(payloads)
+            .then(()=>{updateUsers();alert("Successfully deleted user.")})
+            .catch((err)=>alert(err))
     }
 
     return (
