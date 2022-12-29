@@ -1,19 +1,23 @@
 import UserCard from "../components/cards/UserCard";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import UserActionModal from "../components/modals/UserActionModal";
 import { useState } from 'react';
 import Grid from "@mui/material/Grid";
-import { UserActionModalType } from '../Enum/enum';
+import UserAddModal from "../components/modals/UserAddModal";
+import UserEditModal from "../components/modals/UserEditModal";
+import UserDeleteModal from "../components/modals/UserDeleteModal";
 
 
 function UserPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const handleOpenAddModal = () => setOpenAddModal(true);
     const handleCloseAddModal = () => {setOpenAddModal(false); setChosenUser({});};
     const handleOpenEditModal = () => setOpenEditModal(true);
     const handleCloseEditModal = () => setOpenEditModal(false);
+    const handleOpenDeleteModal = () => setOpenDeleteModal(true);
+    const handleCloseDeleteModal = () => setOpenDeleteModal(false);
     const [users, setUsers] = useState([{id: 1, name: 'ztgg', age: 1}, {id: 2, name: 'demo', age: 2}])
     const [chosenUser, setChosenUser] = useState({});
 
@@ -41,8 +45,9 @@ function UserPage() {
         setUsers(usersCopy);
     }
 
-    const generateDeleteUserFunction = (id) => {
-        return () => setUsers(users.filter((user)=> user.id != id))
+    const deleteUser = () => {
+        const id = chosenUser.id
+        setUsers(users.filter((user)=> user.id != id))
     }
 
     return (
@@ -65,15 +70,16 @@ function UserPage() {
                         <Grid item key={index}>
                             <UserCard user={user} 
                                 onEditClick={()=>{handleOpenEditModal();setChosenUser(user)}}
-                                onDeleteClick={generateDeleteUserFunction(user.id)}>
+                                onDeleteClick={()=>{handleOpenDeleteModal();setChosenUser(user)}}>
                             </UserCard>
                         </Grid>
                     )
                 })}
             </Grid>
         </Box>
-        <UserActionModal open={openAddModal} handleClose={handleCloseAddModal} action={UserActionModalType.Add} onSubmit={addUser}/>
-        <UserActionModal open={openEditModal} user={chosenUser} handleClose={handleCloseEditModal} action={UserActionModalType.Edit} onSubmit={editUser}/>
+        <UserAddModal open={openAddModal} handleClose={handleCloseAddModal} onAdd={addUser}/>
+        <UserEditModal open={openEditModal} user={chosenUser} handleClose={handleCloseEditModal} onEdit={editUser}/>
+        <UserDeleteModal open={openDeleteModal} user={chosenUser} handleClose={handleCloseDeleteModal} onDelete={deleteUser}/>
     </div>
     )
 }
