@@ -7,8 +7,8 @@ class UserApi {
         this.baseUrl = `http://${backendDomain}:${backendPort}/rest-practice-backend/v1`
         this.defaultConfig = {
             method: 'post',
-            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
-        }     
+            headers: { "Content-Type": "application/json"}
+        }
     }
 
     async getUsers(){
