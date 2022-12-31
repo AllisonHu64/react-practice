@@ -2,9 +2,25 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## .env files format
+
+```
+REACT_APP_BACKEND_DOMAIN=SOME_DOMAIN
+REACT_APP_BACKEND_PORT=SOME_PORT
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `npm run deploy:dev -v SOME_VERSION` build docker image `front-end:SOME_VERSION`
+
+Must provide `env` file on path `.env.development`.
+Run a docker container with image `front-end:SOME_VERSION` on port `8080`
+
+### `npm run deploy:prod -v SOME_VERSION` build docker image `front-end:SOME_VERSION`
+
+Must provide `env` file on path `.env.production`.
 
 ### `npm start`
 
