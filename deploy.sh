@@ -1,15 +1,24 @@
-if [ $env == "dev" ]; then
-    yarn build
-    docker build -t front-end:1.3 . 
-    # TODO fix this, error with env passing
+VERSION="lastest"
+while getopts ":v:" options; do
+    case "${options}" in
+    v)
+        VERSION=${OPTARG}
+        ;;
+    :)
+        echo "Error: -${OPTARG} requires an argument."
+        exit 1
+        ;;
+    *)
+        exit 1
+        ;;
+  esac
+done
+
+if [[ $env == "dev" ]]; then
+    docker build -t front-end:${VERSION} --build-arg ENV_FILE=.env.development . 
     docker stop react-practice
     docker rm react-practice
-    docker run --name react-practice -d -p 8080:80 \
-    -e REACT_APP_BACKEND_DOMAIN=$REACT_APP_BACKEND_DOMAIN \
-    -e REACT_APP_BACKEND_PORT=$REACT_APP_BACKEND_PORT \
-    front-end:1.3
-elif [ $env == 'prod' ]; then
-    # TODO
-    yarn build
-    docker build -t front-end:1.3 . 
+    docker run --name react-practice -d -p 8080:80 front-end:${VERSION}
+elif [[ $env == 'prod' ]]; then
+    docker build -t front-end:${VERSION} --build-arg ENV_FILE=.env.production . 
 fi
